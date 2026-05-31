@@ -52,6 +52,10 @@ class Surgery(BaseModel):
         return "+".join(sorted(procedimentos))
 
     @property
+    def procedures_filename(self) -> str:
+        return self.procedure_key()
+
+    @property
     def recipe_filename(self) -> str:
         return f"{self.procedure_key()}.txt"
 
@@ -121,3 +125,26 @@ class Surgery(BaseModel):
             surgery_date,
         )
         return declaration_path
+
+    def get_orientation_path(self) -> Path | None:
+        filename = f"{self.procedure_key()}.docx"
+
+        #
+        # ORIENTAÇÃO ESPECÍFICA
+        #
+
+        specific_path = Path("orientacoes") / self.cirurgiao / filename
+
+        if specific_path.exists():
+            return specific_path
+
+        #
+        # ORIENTAÇÃO GENÉRICA
+        #
+
+        generic_path = Path("orientacoes") / filename
+
+        if generic_path.exists():
+            return generic_path
+
+        return None

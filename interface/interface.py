@@ -3,6 +3,7 @@ from src.extractor import (
     extract_surgeries,
     filter_registered_surgeons,
 )
+from src.find_orientation_files import find_orientation_files
 from src.extract_text_from_pdf import extract_text_from_pdf
 from interface.surgeons_window import SurgeonsWindow
 from src.docx_merger import merge_docx_files
@@ -380,6 +381,17 @@ class MainWindow(ctk.CTk):
             )
             self.add_log(
                 f"Arquivo com todas as receitas gerado em: {consolidated_path}"
+            )
+
+            orientation_files, missing_orientations = find_orientation_files(surgeries)
+            self.add_log(f"✅ {len(orientation_files)} Orientações encontradas.")
+            self.add_log(f"❌ {len(missing_orientations)} Orientações faltando.")
+            self.add_log(f"Orientações pendentes: {missing_orientations}")
+            consolidated_orientations_path = merge_docx_files(
+                orientation_files, Path("impressos/ORIENTACOES CONSOLIDADAS.docx")
+            )
+            self.add_log(
+                f"Arquivo com todas as orientações gerado em: {consolidated_orientations_path}"
             )
 
         except PermissionError as e:
