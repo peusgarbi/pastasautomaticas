@@ -1,0 +1,6 @@
+**/__pycache__
+.ruff_cache
+.venv
+impressos
+arquivos
+receitas
