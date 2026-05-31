@@ -3,14 +3,7 @@
 if exist build rmdir /s /q build
 if exist dist rmdir /s /q dist
 
-pyinstaller ^
-  --noconfirm ^
-  --clean ^
-  --onefile ^
-  --windowed ^
-  --icon=assets\icon.ico ^
-  --name="GeradorDePastas" ^
-  main.py
+pyinstaller GeradorReceitas.spec
 
 echo.
 echo Build finalizado.
