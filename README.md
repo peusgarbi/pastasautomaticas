@@ -30,7 +30,7 @@ Antes de utilizar o programa, é necessário exportar a agenda cirúrgica do dia
 1. Clique em **Impressos**.
 1. Selecione o relatório: `Relatório Farmácia Novo`
 1. Gere o relatório e salve o arquivo PDF em seu computador.
-1. No Gerador de Receitas, clique em **Selecionar PDF** e escolha o arquivo salvo.
+1. No Gerador de Pastas, clique em **Selecionar PDF** e escolha o arquivo salvo.
 
 > [!WARNING]
 > Atenção: o sistema foi desenvolvido para processar o relatório "Relatório Farmácia Novo". Outros relatórios podem não ser reconhecidos corretamente.

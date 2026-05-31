@@ -11,8 +11,9 @@ from src.config import surgeon_repository
 import customtkinter as ctk
 from pathlib import Path
 import ctypes
+import os
 
-myappid = "pedrosgarbi.geradorreceitas.1.0"
+myappid = "pedrosgarbi.geradorpastas.1.0"
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 
@@ -27,7 +28,7 @@ class MainWindow(ctk.CTk):
         self._create_widgets()
 
     def _configure_window(self):
-        self.title("Gerador de Receitas de Alta")
+        self.title("Gerador Automático de Pastas")
         self.geometry("800x500")
 
     def _create_widgets(self):
@@ -38,7 +39,7 @@ class MainWindow(ctk.CTk):
 
         self.title_label = ctk.CTkLabel(
             self,
-            text="Gerador de Receitas de Alta",
+            text="Gerador Automático de Pastas",
             font=("Calibri", 20, "bold"),
         )
 
@@ -134,19 +135,50 @@ class MainWindow(ctk.CTk):
         )
 
         #
+        # FRAME DE AÇÕES
+        #
+
+        self.actions_frame = ctk.CTkFrame(
+            self,
+            fg_color="transparent",
+        )
+
+        self.actions_frame.pack(
+            pady=20,
+        )
+
+        #
         # BOTÃO GERAR
         #
 
         self.generate_button = ctk.CTkButton(
-            self,
-            text="GERAR RECEITAS",
+            self.actions_frame,
+            text="GERAR DOCUMENTOS",
             height=40,
             command=self.generate_receipts,
         )
 
         self.generate_button.pack(
-            padx=20,
-            pady=20,
+            side="left",
+            padx=10,
+            pady=10,
+        )
+
+        #
+        # BOTÃO ABRIR IMPRESSOS
+        #
+
+        self.open_prints_button = ctk.CTkButton(
+            self.actions_frame,
+            height=40,
+            text="ABRIR IMPRESSOS",
+            command=self.open_prints_folder,
+        )
+
+        self.open_prints_button.pack(
+            side="left",
+            padx=10,
+            pady=10,
         )
 
         #
@@ -252,6 +284,24 @@ class MainWindow(ctk.CTk):
                     "Os seguintes arquivos não puderam "
                     "ser removidos porque estão abertos:\n\n" + "\n".join(blocked)
                 ),
+            )
+
+    def open_prints_folder(self):
+
+        try:
+            output_dir = Path("impressos")
+
+            output_dir.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            os.startfile(output_dir)
+
+        except Exception as error:
+            messagebox.showerror(
+                "Erro",
+                (f"Não foi possível abrir a pasta de impressos.\n\n{error}"),
             )
 
     def generate_receipts(self):

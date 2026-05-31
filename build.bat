@@ -9,7 +9,7 @@ pyinstaller ^
   --onefile ^
   --windowed ^
   --icon=assets\icon.ico ^
-  --name="GeradorReceitas" ^
+  --name="GeradorDePastas" ^
   main.py
 
 echo.
