@@ -7,6 +7,7 @@ from src.find_orientation_files import find_orientation_files
 from src.extract_text_from_pdf import extract_text_from_pdf
 from interface.surgeons_window import SurgeonsWindow
 from src.docx_merger import merge_docx_files
+from src.resource_path import resource_path
 from tkinter import filedialog, messagebox
 from src.config import surgeon_repository
 from src.version import VERSION
@@ -22,7 +23,7 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 class MainWindow(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.iconbitmap("assets/icon.ico")
+        self.iconbitmap(resource_path("assets/icon.ico"))
 
         self.pdf_path = None
 

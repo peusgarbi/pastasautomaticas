@@ -10,8 +10,6 @@ class SurgeonsWindow(ctk.CTkToplevel):
         parent,
     ):
         super().__init__(parent)
-        self.iconbitmap("assets/icon.ico")
-
         self.title("Cadastro de Cirurgiões")
         self.geometry("800x500")
 
