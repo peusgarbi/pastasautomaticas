@@ -5,8 +5,8 @@ from src.extractor import (
 )
 from src.extract_text_from_pdf import extract_text_from_pdf
 from src.docx_merger import merge_docx_files
+from tkinter import filedialog, messagebox
 from src.config import SURGEONS
-from tkinter import filedialog
 import customtkinter as ctk
 from pathlib import Path
 import ctypes
@@ -198,6 +198,16 @@ class MainWindow(ctk.CTk):
                     file_path = surgery.generate_companion_declaration(surgery_date)
                     generated_files.append(file_path)
                     generated_declarations += 1
+
+                except PermissionError as e:
+                    messagebox.showerror(
+                        "Arquivo em uso",
+                        (
+                            f"Não foi possível processar o documento {e.filename}.\n\n"
+                            "Provavelmente o arquivo DOCX está aberto no Word.\n\n"
+                            "Feche o documento e tente novamente."
+                        ),
+                    )
                 except Exception as e:
                     self.add_log(f"❌ {e}")
                     not_generated_patients.append(surgery.paciente)
@@ -220,6 +230,15 @@ class MainWindow(ctk.CTk):
                 f"Arquivo com todas as receitas gerado em: {consolidated_path}"
             )
 
+        except PermissionError as e:
+            messagebox.showerror(
+                "Arquivo em uso",
+                (
+                    f"Não foi possível processar o documento {e.filename}.\n\n"
+                    "Provavelmente o arquivo DOCX está aberto no Word.\n\n"
+                    "Feche o documento e tente novamente."
+                ),
+            )
         except Exception as e:
             self.add_log(f"❌ Erro: {e}")
 
