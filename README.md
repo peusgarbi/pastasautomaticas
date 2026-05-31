@@ -5,7 +5,7 @@ Sistema para geração automática de receitas de alta, atestados médicos e dec
 - Gera pastas de alta com receita e orientações automáticas para os pacientes cirúrgicos do HIORP;
 - Faz a **felicidade** dos residentes.
 
-> By [Peusgarb.](https://github.com/peusgarbi)
+> By [Peusgarb.](https://github.com/peusgarbi) :sunglasses:
 
 ## Índice
 
@@ -32,6 +32,7 @@ Antes de utilizar o programa, é necessário exportar a agenda cirúrgica do dia
 1. Gere o relatório e salve o arquivo PDF em seu computador.
 1. No Gerador de Receitas, clique em **Selecionar PDF** e escolha o arquivo salvo.
 
+> [!WARNING]
 > Atenção: o sistema foi desenvolvido para processar o relatório "Relatório Farmácia Novo". Outros relatórios podem não ser reconhecidos corretamente.
 
 ## Gerando os Documentos
@@ -86,6 +87,7 @@ O botão **Limpar Impressos** remove todos os arquivos da pasta `impressos`.
 
 Utilize esta opção antes de iniciar um novo dia de trabalho.
 
+> [!WARNING]
 > Atenção: esta ação não pode ser desfeita.
 
 ## Configuração das Receitas
@@ -94,6 +96,7 @@ O sistema utiliza arquivos de texto (`.txt`) para montar automaticamente as rece
 
 Cada combinação de procedimentos deve possuir um arquivo correspondente.
 
+> [!IMPORTANT]
 > Atenção: o nome dos procedimentos precisa estar escrito por extenso e da mesma forma como cadastrado no relatório do mapa cirúrgico.
 
 ### Estrutura de Pastas
@@ -149,6 +152,7 @@ SEPTOPLASTIA+TURBINECTOMIA BILATERAL.txt
 ADENO - AMIGDALECTOMIA+TURBINECTOMIA BILATERAL.txt
 ```
 
+> [!IMPORTANT]
 > Importante: os procedimentos devem estar em ordem alfabética.
 
 ### Conteúdo dos Arquivos
@@ -289,6 +293,7 @@ ADENO - AMIGDALECTOMIA.txt
 ADENO - AMIGDALECTOMIA+SEPTOPLASTIA.txt
 ```
 
+> [!WARNING]
 > Atenção: utilize os nomes dos procedimentos exatamente como cadastrados no sistema do hospital.
 
 #### Verifique Adulto e Criança
