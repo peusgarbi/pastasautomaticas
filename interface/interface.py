@@ -158,25 +158,42 @@ class MainWindow(ctk.CTk):
             surgery_date = extract_surgery_date(texto)
             surgeries = extract_surgeries(texto)
 
-            generated: int = 0
-            not_generated: int = 0
+            generated_receipts: int = 0
+            not_generated_receipts: int = 0
+            generated_certificates: int = 0
+            generated_declarations: int = 0
             generated_files: list[Path] = []
             for surgery in surgeries:
                 try:
                     file_path = surgery.generate_receipt(surgery_date)
                     generated_files.append(file_path)
-                    generated += 1
+                    generated_files.append(file_path)
+                    generated_receipts += 1
+                    file_path = surgery.generate_certificate(surgery_date)
+                    generated_files.append(file_path)
+                    generated_certificates += 1
+                    file_path = surgery.generate_companion_declaration(surgery_date)
+                    generated_files.append(file_path)
+                    generated_declarations += 1
                 except Exception as e:
                     self.add_log(f"❌ {e}")
-                    not_generated += 1
+                    not_generated_receipts += 1
 
-            self.add_log(f"✅ {generated} Receitas geradas com sucesso.")
-            self.add_log(f"❌ {not_generated} Receitas não geradas devido a erro.")
+            self.add_log(f"✅ {generated_receipts} Receitas geradas com sucesso.")
+            self.add_log(
+                f"❌ {not_generated_receipts} Receitas não geradas devido a erro."
+            )
+            self.add_log(f"{generated_certificates} Atestados gerados.")
+            self.add_log(
+                f"{generated_declarations} Declarações de acompanhante geradas."
+            )
 
             consolidated_path = merge_docx_files(
                 generated_files, Path("impressos/RECEITAS CONSOLIDADAS.docx")
             )
-            self.add_log(f"Arquivo com todas as receitas gerado em: {consolidated_path}")
+            self.add_log(
+                f"Arquivo com todas as receitas gerado em: {consolidated_path}"
+            )
 
         except Exception as e:
             self.add_log(f"❌ Erro: {e}")

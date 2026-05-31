@@ -1,3 +1,5 @@
+from src.generate_companion_declaration import generate_companion_declaration
+from src.medical_certificate_generator import generate_medical_certificate
 from src.receipt_generator import generate_discharge_prescription
 from pydantic import BaseModel, Field
 from src.config import SURGEONS
@@ -79,7 +81,7 @@ class Surgery(BaseModel):
             return ""
         return SURGEONS[self.cirurgiao].crm
 
-    def generate_receipt(self, surgery_date: str):
+    def generate_receipt(self, surgery_date: str) -> Path:
         receipt_txt = self.get_recipe_text(Path("receitas"))
         receipt_path = generate_discharge_prescription(
             self.paciente,
@@ -89,7 +91,33 @@ class Surgery(BaseModel):
             self.cirurgiao,
             self.surgeon_crm,
             receipt_txt,
-            "impressos",
+            Path("impressos"),
             surgery_date,
         )
         return receipt_path
+
+    def generate_certificate(self, surgery_date: str) -> Path:
+        certificate_path = generate_medical_certificate(
+            self.paciente,
+            self.idade,
+            self.sexo,
+            self.endereco,
+            self.cirurgiao,
+            self.surgeon_crm,
+            Path("impressos"),
+            surgery_date,
+        )
+        return certificate_path
+
+    def generate_companion_declaration(self, surgery_date: str) -> Path:
+        declaration_path = generate_companion_declaration(
+            self.paciente,
+            self.idade,
+            self.sexo,
+            self.endereco,
+            self.cirurgiao,
+            self.surgeon_crm,
+            Path("impressos"),
+            surgery_date,
+        )
+        return declaration_path
