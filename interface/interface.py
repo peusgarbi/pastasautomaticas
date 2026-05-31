@@ -75,15 +75,47 @@ class MainWindow(ctk.CTk):
             pady=(0, 10),
         )
 
-        self.select_pdf_button = ctk.CTkButton(
+        #
+        # FRAME DOS BOTÕES
+        #
+
+        self.buttons_frame = ctk.CTkFrame(
             self.pdf_frame,
+            fg_color="transparent",
+        )
+
+        self.buttons_frame.pack(
+            padx=10,
+            pady=(0, 10),
+        )
+
+        #
+        # BOTÃO SELECIONAR PDF
+        #
+
+        self.select_pdf_button = ctk.CTkButton(
+            self.buttons_frame,
             text="Selecionar PDF",
             command=self.select_pdf,
         )
 
         self.select_pdf_button.pack(
-            padx=10,
-            pady=(0, 10),
+            side="left",
+            padx=(0, 10),
+        )
+
+        #
+        # BOTÃO LIMPAR IMPRESSOS
+        #
+
+        self.clear_button = ctk.CTkButton(
+            self.buttons_frame,
+            text="Limpar Impressos",
+            command=self.clear_prints,
+        )
+
+        self.clear_button.pack(
+            side="left",
         )
 
         #
@@ -151,6 +183,52 @@ class MainWindow(ctk.CTk):
         self.logs.see("end")
 
         self.logs.configure(state="disabled")
+
+    def clear_prints(self):
+
+        confirm = messagebox.askyesno(
+            "Confirmar exclusão",
+            (
+                "Deseja realmente excluir todos os "
+                "arquivos da pasta 'impressos'?\n\n"
+                "Esta ação não pode ser desfeita."
+            ),
+        )
+
+        if not confirm:
+            return
+
+        output_dir = Path("impressos")
+
+        if not output_dir.exists():
+            self.add_log("⚠ Pasta 'impressos' não encontrada.")
+
+            return
+
+        deleted = 0
+        blocked = []
+
+        for file in output_dir.iterdir():
+            if not file.is_file():
+                continue
+
+            try:
+                file.unlink()
+                deleted += 1
+
+            except PermissionError:
+                blocked.append(file.name)
+
+        self.add_log(f"🗑 {deleted} arquivo(s) removido(s) da pasta 'impressos'.")
+
+        if blocked:
+            messagebox.showwarning(
+                "Arquivos em uso",
+                (
+                    "Os seguintes arquivos não puderam "
+                    "ser removidos porque estão abertos:\n\n" + "\n".join(blocked)
+                ),
+            )
 
     def generate_receipts(self):
 
