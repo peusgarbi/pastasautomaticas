@@ -9,6 +9,7 @@ from interface.surgeons_window import SurgeonsWindow
 from src.docx_merger import merge_docx_files
 from tkinter import filedialog, messagebox
 from src.config import surgeon_repository
+from src.version import VERSION
 import customtkinter as ctk
 from pathlib import Path
 import ctypes
@@ -29,7 +30,7 @@ class MainWindow(ctk.CTk):
         self._create_widgets()
 
     def _configure_window(self):
-        self.title("Gerador Automático de Pastas")
+        self.title(f"Gerador Automático de Pastas v{VERSION}")
         self.geometry("800x500")
 
     def _create_widgets(self):
