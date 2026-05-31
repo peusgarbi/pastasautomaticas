@@ -1,6 +1,11 @@
-from src.extractor import extract_surgery_date, extract_surgeries
+from src.extractor import (
+    extract_surgery_date,
+    extract_surgeries,
+    filter_registered_surgeons,
+)
 from src.extract_text_from_pdf import extract_text_from_pdf
 from src.docx_merger import merge_docx_files
+from src.config import SURGEONS
 from tkinter import filedialog
 import customtkinter as ctk
 from pathlib import Path
@@ -157,6 +162,18 @@ class MainWindow(ctk.CTk):
             texto = extract_text_from_pdf(self.pdf_path)
             surgery_date = extract_surgery_date(texto)
             surgeries = extract_surgeries(texto)
+            self.add_log(
+                f"⚠ {len(surgeries)} Cirurgias totais identificadas no arquivo."
+            )
+
+            surgeries, missing_surgeons = filter_registered_surgeons(
+                surgeries, SURGEONS
+            )
+            if missing_surgeons:
+                self.add_log("⚠ Cirurgiões não cadastrados:")
+                for surgeon in missing_surgeons:
+                    self.add_log(f"   • {surgeon}")
+            self.add_log(f"⚠ {len(surgeries)} Cirurgias de cirurgiões cadastrados.")
 
             generated_receipts: int = 0
             not_generated_receipts: int = 0

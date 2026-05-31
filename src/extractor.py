@@ -1,4 +1,5 @@
 from src.models import Surgery
+from src.config import Surgeon
 import re
 
 
@@ -128,3 +129,23 @@ def extract_surgeries(text: str) -> list[Surgery]:
             print(e)
 
     return surgeries
+
+
+def filter_registered_surgeons(
+    surgeries: list[Surgery],
+    surgeons: dict[str, Surgeon],
+) -> tuple[list[Surgery], list[str]]:
+
+    valid_surgeries: list[Surgery] = []
+    missing_surgeons: set[str] = set()
+
+    for surgery in surgeries:
+        if surgery.cirurgiao in surgeons:
+            valid_surgeries.append(surgery)
+        else:
+            missing_surgeons.add(surgery.cirurgiao)
+
+    return (
+        valid_surgeries,
+        sorted(missing_surgeons),
+    )
