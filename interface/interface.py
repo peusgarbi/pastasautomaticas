@@ -163,6 +163,7 @@ class MainWindow(ctk.CTk):
             generated_certificates: int = 0
             generated_declarations: int = 0
             generated_files: list[Path] = []
+            not_generated_patients: list[str] = []
             for surgery in surgeries:
                 try:
                     file_path = surgery.generate_receipt(surgery_date)
@@ -177,16 +178,18 @@ class MainWindow(ctk.CTk):
                     generated_declarations += 1
                 except Exception as e:
                     self.add_log(f"❌ {e}")
+                    not_generated_patients.append(surgery.paciente)
                     not_generated_receipts += 1
 
             self.add_log(f"✅ {generated_receipts} Receitas geradas com sucesso.")
-            self.add_log(
-                f"❌ {not_generated_receipts} Receitas não geradas devido a erro."
-            )
             self.add_log(f"{generated_certificates} Atestados gerados.")
             self.add_log(
                 f"{generated_declarations} Declarações de acompanhante geradas."
             )
+            self.add_log(
+                f"❌ {not_generated_receipts} Receitas não geradas devido a erro."
+            )
+            self.add_log(f"Pacientes pendentes: {not_generated_patients}")
 
             consolidated_path = merge_docx_files(
                 generated_files, Path("impressos/RECEITAS CONSOLIDADAS.docx")
