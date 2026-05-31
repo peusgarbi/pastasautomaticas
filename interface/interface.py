@@ -9,11 +9,16 @@ from src.config import SURGEONS
 from tkinter import filedialog
 import customtkinter as ctk
 from pathlib import Path
+import ctypes
+
+myappid = "pedrosgarbi.geradorreceitas.1.0"
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 
 class MainWindow(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self.iconbitmap("assets/icon.ico")
 
         self.pdf_path = None
 
