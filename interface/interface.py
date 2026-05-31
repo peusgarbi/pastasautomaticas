@@ -1,5 +1,6 @@
 from src.extractor import extract_surgery_date, extract_surgeries
 from src.extract_text_from_pdf import extract_text_from_pdf
+from src.docx_merger import merge_docx_files
 from tkinter import filedialog
 import customtkinter as ctk
 from pathlib import Path
@@ -159,16 +160,23 @@ class MainWindow(ctk.CTk):
 
             generated: int = 0
             not_generated: int = 0
+            generated_files: list[Path] = []
             for surgery in surgeries:
                 try:
-                    surgery.generate_receipt(surgery_date)
+                    file_path = surgery.generate_receipt(surgery_date)
+                    generated_files.append(file_path)
                     generated += 1
                 except Exception as e:
                     self.add_log(f"❌ {e}")
                     not_generated += 1
 
             self.add_log(f"✅ {generated} Receitas geradas com sucesso.")
-            self.add_log(f"❌ {not_generated} Receitas geradas com sucesso.")
+            self.add_log(f"❌ {not_generated} Receitas não geradas devido a erro.")
+
+            consolidated_path = merge_docx_files(
+                generated_files, Path("impressos/RECEITAS CONSOLIDADAS.docx")
+            )
+            self.add_log(f"Arquivo com todas as receitas gerado em: {consolidated_path}")
 
         except Exception as e:
             self.add_log(f"❌ Erro: {e}")

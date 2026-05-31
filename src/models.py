@@ -1,5 +1,6 @@
 from src.receipt_generator import generate_discharge_prescription
 from pydantic import BaseModel, Field
+from src.config import SURGEONS
 from pathlib import Path
 import re
 
@@ -71,6 +72,13 @@ class Surgery(BaseModel):
 
         return recipe_path.read_text(encoding="utf-8")
 
+    @property
+    def surgeon_crm(self) -> str:
+        surgeon = SURGEONS.get(self.cirurgiao)
+        if surgeon is None:
+            return ""
+        return SURGEONS[self.cirurgiao].crm
+
     def generate_receipt(self, surgery_date: str):
         receipt_txt = self.get_recipe_text(Path("receitas"))
         receipt_path = generate_discharge_prescription(
@@ -79,7 +87,7 @@ class Surgery(BaseModel):
             self.sexo,
             self.endereco,
             self.cirurgiao,
-            "CRM",
+            self.surgeon_crm,
             receipt_txt,
             "impressos",
             surgery_date,
