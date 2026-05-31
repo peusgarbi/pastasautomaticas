@@ -156,17 +156,19 @@ class MainWindow(ctk.CTk):
             texto = extract_text_from_pdf(self.pdf_path)
             surgery_date = extract_surgery_date(texto)
             surgeries = extract_surgeries(texto)
-            for surgery in surgeries:
-                surgery.generate_receipt(surgery_date)
-            #
-            # Aqui entrará seu fluxo
-            #
-            # extract_pdf_text(...)
-            # extract_surgeries(...)
-            # generate_receipts(...)
-            #
 
-            self.add_log("✅ Receitas geradas com sucesso.")
+            generated: int = 0
+            not_generated: int = 0
+            for surgery in surgeries:
+                try:
+                    surgery.generate_receipt(surgery_date)
+                    generated += 1
+                except Exception as e:
+                    self.add_log(f"❌ {e}")
+                    not_generated += 1
+
+            self.add_log(f"✅ {generated} Receitas geradas com sucesso.")
+            self.add_log(f"❌ {not_generated} Receitas geradas com sucesso.")
 
         except Exception as e:
             self.add_log(f"❌ Erro: {e}")
