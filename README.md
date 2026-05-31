@@ -15,6 +15,9 @@ Sistema para geração automática de receitas de alta, atestados médicos e dec
 * [Limpar Impressos](#limpar-impressos)
 * [Configuração das Receitas](#configuração-das-receitas)
 * [Criando uma Nova Receita](#criando-uma-nova-receita)
+* [Configuração das Orientações](#configuração-das-orientações)
+* [Criando uma Nova Orientação](#criando-uma-nova-orientação)
+* [Compilação das Orientações](#compilação-das-orientações)
 * [Primeira Utilização](#primeira-utilização)
 * [Cadastro de Cirurgiões](#cadastro-de-cirurgiões)
 * [Editar um Cirurgião](#editar-um-cirurgião)
@@ -62,10 +65,11 @@ Todos os documentos são salvos na pasta:
 impressos/
 ```
 
-Será também gerado um arquivo com todos os documentos consolidados em um só para facilitar a impressão:
+Serão também gerados arquivos compilados com todos os documentos consolidados em um só para facilitar a impressão:
 
 ```text
 impressos/RECEITAS CONSOLIDADAS.docx
+impressos/ORIENTACOES CONSOLIDADAS.docx
 ```
 
 Exemplo:
@@ -77,7 +81,9 @@ impressos/
 ├── MARIA - DECLARACAO ACOMPANHANTE.docx
 ├── JOAO - RECEITA ALTA.docx
 ├── JOAO - ATESTADO.docx
+├── JOAO - DECLARACAO ACOMPANHANTE.docx
 ├── RECEITAS CONSOLIDADAS.docx
+├── ORIENTACOES CONSOLIDADAS.docx
 └── ...
 ```
 
@@ -307,6 +313,152 @@ Se o programa não localizar um modelo correspondente:
 1. A receita daquele paciente não será gerada.
 2. Uma mensagem será exibida no log do programa.
 3. Crie o arquivo correspondente e execute o processamento novamente.
+
+## Configuração das Orientações
+
+O sistema também compila automaticamente todas as orientações de alta em um único arquivo para impressão.
+
+As orientações devem ser armazenadas em formato `.docx`.
+
+### Estrutura de Pastas
+
+As orientações genéricas ficam diretamente na pasta:
+
+```text
+orientacoes/
+```
+
+Exemplo:
+
+```text
+orientacoes/
+├── ADENOIDECTOMIA.docx
+├── ADENO - AMIGDALECTOMIA.docx
+├── SEPTOPLASTIA+TURBINECTOMIA BILATERAL.docx
+└── ...
+```
+
+Caso um médico possua orientações próprias para determinado procedimento, crie uma pasta com o nome do cirurgião:
+
+```text
+orientacoes/
+├── ADENOIDECTOMIA.docx
+├── SEPTOPLASTIA+TURBINECTOMIA BILATERAL.docx
+│
+├── PEDRO SGARBI/
+│   ├── ADENOIDECTOMIA.docx
+│   └── SEPTOPLASTIA+TURBINECTOMIA BILATERAL.docx
+│
+└── FULANO DE TAL/
+    └── ADENO - AMIGDALECTOMIA+TURBINECTOMIA BILATERAL.docx
+```
+
+### Prioridade de Busca
+
+Ao gerar as orientações, o sistema procura os arquivos na seguinte ordem:
+
+#### 1. Orientação específica do cirurgião
+
+```text
+orientacoes/
+└── PEDRO SGARBI/
+    └── ADENOIDECTOMIA.docx
+```
+
+#### 2. Orientação genérica
+
+```text
+orientacoes/
+└── ADENOIDECTOMIA.docx
+```
+
+Se nenhuma das duas for encontrada, uma mensagem de aviso será exibida.
+
+### Nome dos Arquivos
+
+As orientações seguem exatamente a mesma nomenclatura utilizada nas receitas.
+
+Exemplos:
+
+```text
+ADENOIDECTOMIA.docx
+SEPTOPLASTIA+TURBINECTOMIA BILATERAL.docx
+```
+
+> Importante: os procedimentos devem estar em ordem alfabética.
+
+## Criando uma Nova Orientação
+
+Sempre que surgir uma nova combinação de procedimentos, será necessário criar uma orientação correspondente.
+
+### Passo 1
+
+Identifique os procedimentos realizados.
+
+Exemplo:
+
+```text
+SEPTOPLASTIA + TURBINECTOMIA BILATERAL + ADENO - AMIGDALECTOMIA
+```
+
+### Passo 2
+
+Organize os procedimentos em ordem alfabética.
+
+### Passo 3
+
+Crie o arquivo:
+
+```text
+ADENO - AMIGDALECTOMIA+SEPTOPLASTIA+TURBINECTOMIA BILATERAL.docx
+```
+
+### Passo 4
+
+Salve o arquivo:
+
+* Na pasta do médico, caso a orientação seja específica.
+* Na pasta principal, caso a orientação seja válida para todos os médicos.
+
+### Exemplo
+
+```text
+orientacoes/
+└── ADENO - AMIGDALECTOMIA+SEPTOPLASTIA+TURBINECTOMIA BILATERAL.docx
+```
+
+ou
+
+```text
+orientacoes/
+└── PEDRO SGARBI/
+    └── ADENO - AMIGDALECTOMIA+SEPTOPLASTIA+TURBINECTOMIA BILATERAL.docx
+```
+
+## Compilação das Orientações
+
+Ao gerar os documentos, o sistema cria automaticamente um arquivo contendo todas as orientações de alta dos pacientes do dia.
+
+As orientações são organizadas na mesma ordem da agenda cirúrgica.
+
+O arquivo é salvo em:
+
+```text
+impressos/
+└── ORIENTACOES CONSOLIDADAS.docx
+```
+
+Este arquivo pode ser impresso diretamente para distribuição aos pacientes.
+
+### Orientações Não Encontradas
+
+Caso uma orientação não seja localizada:
+
+* O programa continuará processando os demais pacientes.
+* Uma mensagem será exibida no log.
+* A orientação ausente não será incluída no arquivo final.
+
+Nessa situação, crie o arquivo correspondente e execute o processamento novamente.
 
 ## Primeira Utilização
 
