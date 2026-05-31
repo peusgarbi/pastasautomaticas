@@ -4,9 +4,10 @@ from src.extractor import (
     filter_registered_surgeons,
 )
 from src.extract_text_from_pdf import extract_text_from_pdf
+from interface.surgeons_window import SurgeonsWindow
 from src.docx_merger import merge_docx_files
 from tkinter import filedialog, messagebox
-from src.config import SURGEONS
+from src.config import surgeon_repository
 import customtkinter as ctk
 from pathlib import Path
 import ctypes
@@ -113,9 +114,23 @@ class MainWindow(ctk.CTk):
             text="Limpar Impressos",
             command=self.clear_prints,
         )
-
         self.clear_button.pack(
             side="left",
+            padx=(0, 10),
+        )
+
+        #
+        # BOTÃO CIRURGIÕES
+        #
+
+        self.surgeons_button = ctk.CTkButton(
+            self.buttons_frame,
+            text="Cirurgiões",
+            command=self.open_surgeons_window,
+        )
+        self.surgeons_button.pack(
+            side="left",
+            padx=(0, 10),
         )
 
         #
@@ -160,6 +175,15 @@ class MainWindow(ctk.CTk):
         self.logs.insert("end", "Aguardando arquivo PDF...\n")
 
         self.logs.configure(state="disabled")
+
+    def open_surgeons_window(self):
+        if hasattr(self, "surgeons_window"):
+            if self.surgeons_window.winfo_exists():
+                self.surgeons_window.focus()
+
+                return
+
+        self.surgeons_window = SurgeonsWindow(self)
 
     def select_pdf(self):
 
@@ -250,7 +274,7 @@ class MainWindow(ctk.CTk):
             )
 
             surgeries, missing_surgeons = filter_registered_surgeons(
-                surgeries, SURGEONS
+                surgeries, surgeon_repository.surgeons
             )
             if missing_surgeons:
                 self.add_log("⚠ Cirurgiões não cadastrados:")

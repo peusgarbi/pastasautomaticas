@@ -1,8 +1,8 @@
 from src.generate_companion_declaration import generate_companion_declaration
 from src.medical_certificate_generator import generate_medical_certificate
 from src.receipt_generator import generate_discharge_prescription
+from src.config import surgeon_repository
 from pydantic import BaseModel, Field
-from src.config import SURGEONS
 from pathlib import Path
 import re
 
@@ -76,10 +76,10 @@ class Surgery(BaseModel):
 
     @property
     def surgeon_crm(self) -> str:
-        surgeon = SURGEONS.get(self.cirurgiao)
+        surgeon = surgeon_repository.surgeons.get(self.cirurgiao)
         if surgeon is None:
             return ""
-        return SURGEONS[self.cirurgiao].crm
+        return surgeon_repository.surgeons[self.cirurgiao].crm
 
     def generate_receipt(self, surgery_date: str) -> Path:
         receipt_txt = self.get_recipe_text(Path("receitas"))
