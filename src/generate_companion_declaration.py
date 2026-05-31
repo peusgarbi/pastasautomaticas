@@ -1,8 +1,8 @@
-from pathlib import Path
-
-from docx import Document
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from src.footer import generate_footer_text
 from docx.shared import Cm, Pt
+from pathlib import Path
+from docx import Document
 
 
 def generate_companion_declaration(
@@ -126,17 +126,10 @@ def generate_companion_declaration(
     #
 
     footer = section.footer
-
     footer_paragraph = footer.paragraphs[0]
-
     footer_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-
-    footer_paragraph.paragraph_format.left_indent = Cm(5.5)
-
-    footer_run = footer_paragraph.add_run(
-        f"{surgeon_name}\nMédico Otorrinolaringologista\nCRM {surgeon_crm}"
-    )
-
+    footer_paragraph.paragraph_format.left_indent = Cm(4.5)
+    footer_run = footer_paragraph.add_run(generate_footer_text(surgeon_name))
     footer_run.bold = True
 
     #

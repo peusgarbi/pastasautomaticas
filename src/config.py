@@ -74,6 +74,7 @@ class SurgeonRepository:
             ),
             encoding="utf-8",
         )
+        self.load()
 
     def exists(
         self,
