@@ -125,7 +125,7 @@ def generate_discharge_prescription(
     footer_paragraph.paragraph_format.left_indent = Cm(5.5)
 
     footer_run = footer_paragraph.add_run(
-        f"{surgeon_name}\nOtorrinolaringologista\nCRM {surgeon_crm}"
+        f"{surgeon_name}\nMédico Otorrinolaringologista\nCRM {surgeon_crm}"
     )
     footer_run.bold = True
 
