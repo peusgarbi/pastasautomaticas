@@ -45,16 +45,53 @@ def split_surgeries(text: str) -> list[tuple[int, str]]:
     return surgeries
 
 
-def extract_procedures(block: str) -> list[str]:
+def extract_procedures(
+    block: str,
+) -> list[str]:
 
-    match = re.search(r"Serviços:\s*(.*?)\s*Plano:", block, re.S)
+    match = re.search(
+        r"Serviços:\s*(.*?)(?:Materiais:|Obs:)",
+        block,
+        re.S,
+    )
 
     if not match:
         return []
 
     services_text = match.group(1)
 
-    services_text = services_text.replace("\n", " ")
+    #
+    # O HiperDoctor insere "Plano: XXX" no meio da seção
+    # de serviços quando o procedimento ocupa múltiplas linhas.
+    #
+    # Exemplo:
+    #
+    # Serviços: ADENOIDECTOMIA + TURBINECTOMIA BILATERAL +
+    # TIMPANOTOMIA Plano: RIO PRETO
+    # EXPLORADA
+    #
+    # Removemos apenas o trecho da linha do plano para
+    # reconstruir corretamente o procedimento completo.
+    #
+
+    services_text = re.sub(
+        r"\s+Plano:\s*[^\n\r]+",
+        "",
+        services_text,
+        flags=re.IGNORECASE,
+    )
+
+    #
+    # Junta linhas quebradas
+    #
+
+    services_text = services_text.replace("\n", " ").replace("\r", " ")
+
+    #
+    # Normaliza espaços múltiplos
+    #
+
+    services_text = " ".join(services_text.split())
 
     return [item.strip() for item in services_text.split("+") if item.strip()]
 
