@@ -4,6 +4,7 @@ from src.receipt_generator import generate_discharge_prescription
 from src.config import surgeon_repository
 from pydantic import BaseModel, Field
 from pathlib import Path
+from typing import Tuple
 import re
 
 
@@ -76,7 +77,11 @@ class Surgery(BaseModel):
         if not recipe_path.exists():
             raise FileNotFoundError(f"Receita não encontrada: {recipe_path}")
 
-        return recipe_path.read_text(encoding="utf-8")
+        text = recipe_path.read_text(encoding="utf-8")
+        if text == "":
+            raise FileNotFoundError(f"Receita com texto vazio: {recipe_path}")
+
+        return text
 
     @property
     def surgeon_crm(self) -> str:
@@ -126,24 +131,24 @@ class Surgery(BaseModel):
         )
         return declaration_path
 
-    def get_orientation_path(self) -> Path | None:
+    def orientation_template_path(self) -> Tuple[Path, Path]:
+        """
+        Retorna uma tupla [specific_path, generic_path] para o path da orientação específica
+        do Médico e da orientação genérica do procedimento.
+        """
         filename = f"{self.procedure_key()}.docx"
-
-        #
-        # ORIENTAÇÃO ESPECÍFICA
-        #
-
         specific_path = Path("orientacoes") / self.cirurgiao / filename
+        generic_path = Path("orientacoes") / filename
+        return specific_path, generic_path
 
+    def get_orientation_path(self) -> Path | None:
+        specific_path, generic_path = self.orientation_template_path()
+
+        # ORIENTAÇÃO ESPECÍFICA
         if specific_path.exists():
             return specific_path
 
-        #
         # ORIENTAÇÃO GENÉRICA
-        #
-
-        generic_path = Path("orientacoes") / filename
-
         if generic_path.exists():
             return generic_path
 

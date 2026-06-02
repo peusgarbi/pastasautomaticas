@@ -6,6 +6,7 @@ from src.extractor import (
 from src.find_orientation_files import find_orientation_files
 from src.extract_text_from_pdf import extract_text_from_pdf
 from interface.surgeons_window import SurgeonsWindow
+from interface.surgical_map import SurgicalMapWindow
 from src.docx_merger import merge_docx_files
 from src.resource_path import resource_path
 from tkinter import filedialog, messagebox
@@ -26,6 +27,8 @@ class MainWindow(ctk.CTk):
         self.iconbitmap(resource_path("assets/icon.ico"))
 
         self.pdf_path = None
+        self.surgeries = None
+        self.surgery_date = None
 
         self._configure_window()
         self._create_widgets()
@@ -151,6 +154,22 @@ class MainWindow(ctk.CTk):
         )
 
         #
+        # BOTÃO MAPA
+        #
+
+        self.surgical_map_button = ctk.CTkButton(
+            self,
+            text="Mapa Cirúrgico",
+            command=self.open_surgical_map,
+            state="disabled",
+        )
+
+        self.surgical_map_button.pack(
+            padx=20,
+            pady=(0, 20),
+        )
+
+        #
         # BOTÃO GERAR
         #
 
@@ -159,6 +178,7 @@ class MainWindow(ctk.CTk):
             text="GERAR DOCUMENTOS",
             height=40,
             command=self.generate_receipts,
+            state="disabled",
         )
 
         self.generate_button.pack(
@@ -221,9 +241,9 @@ class MainWindow(ctk.CTk):
         self.surgeons_window = SurgeonsWindow(self)
 
     def select_pdf(self):
-
         pdf_path = filedialog.askopenfilename(
-            title="Selecione a agenda cirúrgica", filetypes=[("Arquivos PDF", "*.pdf")]
+            title="Selecione a agenda cirúrgica",
+            filetypes=[("Arquivos PDF", "*.pdf")],
         )
 
         if not pdf_path:
@@ -231,7 +251,15 @@ class MainWindow(ctk.CTk):
 
         self.pdf_path = Path(pdf_path)
 
-        self.pdf_path_label.configure(text=self.pdf_path.name)
+        text = extract_text_from_pdf(self.pdf_path)
+        self.surgeries = extract_surgeries(text)
+        self.surgery_date = extract_surgery_date(text)
+
+        self.pdf_path_label.configure(
+            text=(f"{self.pdf_path.name} ({len(self.surgeries)} cirurgias)")
+        )
+        self.surgical_map_button.configure(state="normal")
+        self.generate_button.configure(state="normal")
 
     def add_log(self, message: str):
 
@@ -307,21 +335,36 @@ class MainWindow(ctk.CTk):
                 (f"Não foi possível abrir a pasta de impressos.\n\n{error}"),
             )
 
+    def open_surgical_map(self):
+        if not getattr(
+            self,
+            "surgeries",
+            None,
+        ):
+            messagebox.showwarning(
+                "Agenda Cirúrgica",
+                "Selecione um PDF primeiro.",
+            )
+            return
+
+        SurgicalMapWindow(
+            self,
+            self.surgeries,
+        )
+
     def generate_receipts(self):
 
         if not self.pdf_path:
             self.add_log("❌ Nenhum PDF selecionado.")
 
             return
-
         self.generate_button.configure(state="disabled")
 
         try:
             self.add_log(f"📄 Processando {self.pdf_path.name}")
 
-            texto = extract_text_from_pdf(self.pdf_path)
-            surgery_date = extract_surgery_date(texto)
-            surgeries = extract_surgeries(texto)
+            surgery_date = self.surgery_date
+            surgeries = self.surgeries
             self.add_log(
                 f"⚠ {len(surgeries)} Cirurgias totais identificadas no arquivo."
             )
