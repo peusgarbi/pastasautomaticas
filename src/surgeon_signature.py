@@ -1,7 +1,7 @@
 from src.config import surgeon_repository
 
 
-def generate_footer_text(
+def generate_surgeon_signature(
     surgeon_name: str,
 ) -> str:
     surgeon = surgeon_repository.get(surgeon_name)

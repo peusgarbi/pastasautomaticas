@@ -1,5 +1,5 @@
+from src.surgeon_signature import generate_surgeon_signature
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from src.footer import generate_footer_text
 from docx.shared import Cm, Pt
 from docx import Document
 from pathlib import Path
@@ -47,10 +47,9 @@ def generate_discharge_prescription(
 
     # Margens padrão do hospital
     section.top_margin = Cm(4.0)
-    section.bottom_margin = Cm(2.5)
+    section.bottom_margin = Cm(2.0)
     section.left_margin = Cm(1.9)
     section.right_margin = Cm(1.9)
-    section.footer_distance = Cm(2.0)
 
     #
     # FONTE PADRÃO
@@ -109,18 +108,15 @@ def generate_discharge_prescription(
     city_date.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
     #
-    # ASSINATURA NO FOOTER
+    # ASSINATURA
     #
 
-    footer = section.footer
-    footer_paragraph = footer.paragraphs[0]
-    footer_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-    footer_paragraph.paragraph_format.space_before = Pt(0)
-    footer_paragraph.paragraph_format.space_after = Pt(0)
-    footer_paragraph.paragraph_format.line_spacing = 1
-    footer_paragraph.paragraph_format.left_indent = Cm(4.5)
-    footer_run = footer_paragraph.add_run(generate_footer_text(surgeon_name))
-    footer_run.bold = True
+    document.add_paragraph()
+    signature = document.add_paragraph()
+    signature.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    signature.paragraph_format.left_indent = Cm(4.5)
+    run = signature.add_run(generate_surgeon_signature(surgeon_name))
+    run.bold = True
 
     #
     # SALVAR
