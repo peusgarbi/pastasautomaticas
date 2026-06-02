@@ -50,11 +50,11 @@ def extract_procedures(
 ) -> list[str]:
 
     match = re.search(
-        r"Serviços:\s*(.*?)(?:Materiais:|Obs:)",
+        r"Serviços:\s*(.*?)(?:Materiais:|Obs:|$)",
         block,
         re.S,
     )
-
+    
     if not match:
         return []
 
