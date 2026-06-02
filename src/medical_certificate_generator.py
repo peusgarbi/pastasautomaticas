@@ -98,7 +98,7 @@ def generate_medical_certificate(
         f"{patient_name} foi submetido(a) a procedimento "
         "cirúrgico otorrinolaringológico nesta data.\n\n"
         f"Necessita de afastamento de suas atividades "
-        f"por {days} (sete) dias, a contar da presente data,"
+        f"por {days} (sete) dias, a contar da presente data, "
         "para adequada recuperação pós-operatória."
     )
 
