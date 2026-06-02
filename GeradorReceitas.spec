@@ -1,5 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+docxcompose_datas = collect_data_files(
+    "docxcompose"
+)
 
 a = Analysis(
     ['main.py'],
@@ -7,7 +10,7 @@ a = Analysis(
     binaries=[],
     datas=[
         ("assets", "assets"),
-    ],
+    ] + docxcompose_datas,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
