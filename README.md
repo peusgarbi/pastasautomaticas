@@ -13,6 +13,7 @@ Sistema para geração automática de receitas de alta, atestados médicos e dec
 * [Gerando os Documentos](#gerando-os-documentos)
 * [Arquivos Gerados](#arquivos-gerados)
 * [Limpar Impressos](#limpar-impressos)
+* [Mapa Cirúrgico](#mapa-cirúrgico)
 * [Configuração das Receitas](#configuração-das-receitas)
 * [Criando uma Nova Receita](#criando-uma-nova-receita)
 * [Configuração das Orientações](#configuração-das-orientações)
@@ -95,6 +96,61 @@ Utilize esta opção antes de iniciar um novo dia de trabalho.
 
 > [!WARNING]
 > Atenção: esta ação não pode ser desfeita.
+
+## Mapa Cirúrgico
+
+Após selecionar uma agenda cirúrgica, é possível abrir o **Mapa Cirúrgico**.
+
+O mapa apresenta todas as cirurgias identificadas na agenda e permite verificar rapidamente a disponibilidade dos modelos necessários para geração dos documentos.
+
+### Informações exibidas
+
+- Horário
+- Paciente
+- Cirurgião
+- Procedimentos
+- Status da receita
+- Status da orientação
+
+### Status das orientações
+
+| Ícone | Significado |
+|---------|---------|
+| 👨‍⚕️ | Orientação específica do cirurgião |
+| 📘 | Orientação genérica |
+| ❌ | Orientação inexistente |
+
+### Status das receitas
+
+| Ícone | Significado |
+|---------|---------|
+| ✔ | Receita disponível |
+| ❌ | Receita inexistente |
+
+### Status dos cirurgiões
+
+| Ícone | Significado |
+|---------|---------|
+| ✔ | Cirurgião cadastrado |
+| ⚠ | Cirurgião não cadastrado |
+
+### Gerenciamento de Receitas
+
+Pelo Mapa Cirúrgico é possível abrir diretamente os modelos de receita.
+
+Ao clicar em **Abrir Receita**:
+
+- Se o modelo existir, ele será aberto.
+- Se o modelo não existir, o sistema criará automaticamente:
+  - As pastas necessárias.
+  - O arquivo de receita.
+  - O arquivo será aberto para edição.
+
+Dessa forma não é necessário navegar manualmente pela estrutura de diretórios.
+
+### Gerenciamento de Orientações
+
+Pelo Mapa Cirúrgico é possível gerenciar tanto orientações genéricas quanto orientações específicas.
 
 ## Configuração das Receitas
 
