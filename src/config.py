@@ -1,6 +1,6 @@
-import json
+from pydantic import BaseModel, Field
 from pathlib import Path
-from pydantic import BaseModel
+import json
 
 
 class Surgeon(BaseModel):
@@ -8,6 +8,10 @@ class Surgeon(BaseModel):
     prefixo: str = ""
     rqe: str = ""
     especialidade: str = ""
+
+
+class ProcedureAliasConfig(BaseModel):
+    aliases: dict[str, list[str]] = Field(default_factory=dict)
 
 
 MOCK_SURGEONS = {
@@ -29,7 +33,6 @@ def ensure_config_exists():
     )
 
     surgeons_file = config_dir / "surgeons.json"
-
     if surgeons_file.exists():
         return False
 
@@ -134,3 +137,71 @@ class SurgeonRepository:
 
 
 surgeon_repository = SurgeonRepository(Path("config/surgeons.json"))
+
+
+class ProcedureAliasRepository:
+    def __init__(self, path: Path):
+        self.path = path
+        self.config = ProcedureAliasConfig()
+        self.reverse_aliases: dict[str, str] = {}
+        self.load()
+
+    def load(self):
+        if not self.path.exists():
+            self.save()
+            return
+
+        with open(
+            self.path,
+            encoding="utf-8",
+        ) as file:
+            data = json.load(file)
+        self.config = ProcedureAliasConfig(aliases=data)
+
+        self.build_reverse_aliases()
+
+    def save(self):
+        self.path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        with open(
+            self.path,
+            "w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(
+                self.config.aliases,
+                file,
+                ensure_ascii=False,
+                indent=4,
+            )
+
+    def build_reverse_aliases(
+        self,
+    ):
+
+        self.reverse_aliases.clear()
+
+        for (
+            alias,
+            procedures,
+        ) in self.config.aliases.items():
+            for procedure in procedures:
+                self.reverse_aliases[procedure.upper()] = alias
+
+    def normalize(
+        self,
+        procedure: str,
+    ) -> str:
+
+        return self.reverse_aliases.get(
+            procedure.upper(),
+            procedure,
+        )
+
+
+procedure_alias_repository = ProcedureAliasRepository(
+    Path("config/procedure_aliases.json")
+)

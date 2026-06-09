@@ -1,7 +1,7 @@
 from src.generate_companion_declaration import generate_companion_declaration
 from src.medical_certificate_generator import generate_medical_certificate
+from src.config import surgeon_repository, procedure_alias_repository
 from src.receipt_generator import generate_discharge_prescription
-from src.config import surgeon_repository
 from pydantic import BaseModel, Field
 from pathlib import Path
 from typing import Tuple
@@ -46,11 +46,18 @@ class Surgery(BaseModel):
         return self.cirurgiao.replace("/", "_").strip()
 
     def procedure_key(self) -> str:
-        procedimentos = [
-            re.sub(r"\s+", " ", proc).strip() for proc in self.procedimentos
-        ]
+        procedures = []
+        for proc in self.procedimentos:
+            proc = re.sub(
+                r"\s+",
+                " ",
+                proc,
+            ).strip()
 
-        return "+".join(sorted(procedimentos))
+            proc = procedure_alias_repository.normalize(proc)
+            procedures.append(proc)
+
+        return "+".join(sorted(set(procedures)))
 
     @property
     def procedures_filename(self) -> str:
