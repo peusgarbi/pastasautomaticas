@@ -54,7 +54,7 @@ def extract_procedures(
         block,
         re.S,
     )
-    
+
     if not match:
         return []
 
