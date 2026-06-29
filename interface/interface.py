@@ -14,6 +14,7 @@ from src.config import surgeon_repository
 from src.version import VERSION
 import customtkinter as ctk
 from pathlib import Path
+import webbrowser
 import ctypes
 import os
 
@@ -35,7 +36,7 @@ class MainWindow(ctk.CTk):
 
     def _configure_window(self):
         self.title(f"Gerador Automático de Pastas v{VERSION}")
-        self.geometry("800x500")
+        self.geometry("800x800")
 
     def _create_widgets(self):
 
@@ -230,6 +231,43 @@ class MainWindow(ctk.CTk):
         self.logs.insert("end", "Aguardando arquivo PDF...\n")
 
         self.logs.configure(state="disabled")
+
+        #
+        # RODAPÉ
+        #
+
+        self.footer_frame = ctk.CTkFrame(
+            self,
+            fg_color="transparent",
+        )
+        self.footer_frame.pack(
+            side="bottom",
+            fill="x",
+            pady=(0, 10),
+        )
+        self.footer_label = ctk.CTkLabel(
+            self.footer_frame,
+            text=f"Desenvolvido com carinho por Pedro 'Peusgarb' Sgarbi • v{VERSION} •",
+            text_color="gray60",
+        )
+        self.footer_label.pack(
+            side="left",
+            padx=(10, 5),
+        )
+
+        self.github_link = ctk.CTkLabel(
+            self.footer_frame,
+            text="Repositório no GitHub",
+            text_color="#1f6feb",
+            cursor="hand2",
+        )
+        self.github_link.pack(
+            side="left",
+        )
+        self.github_link.bind(
+            "<Button-1>",
+            lambda e: webbrowser.open("https://github.com/peusgarbi/pastasautomaticas"),
+        )
 
     def open_surgeons_window(self):
         if hasattr(self, "surgeons_window"):

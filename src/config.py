@@ -14,6 +14,10 @@ class ProcedureAliasConfig(BaseModel):
     aliases: dict[str, list[str]] = Field(default_factory=dict)
 
 
+class Config(BaseModel):
+    adult_age: int = 18
+
+
 MOCK_SURGEONS = {
     "FULANO DA SILVA SAURO": {
         "prefixo": "Dr.",
@@ -205,3 +209,49 @@ class ProcedureAliasRepository:
 procedure_alias_repository = ProcedureAliasRepository(
     Path("config/procedure_aliases.json")
 )
+
+
+class ConfigRepository:
+    def __init__(
+        self,
+        path: Path,
+    ):
+        self.path = path
+        self.config = Config()
+        self.load()
+
+    @property
+    def adult_age(self) -> int:
+        return self.config.adult_age
+
+    def load(self):
+        if not self.path.exists():
+            self.save()
+            return
+
+        with open(
+            self.path,
+            encoding="utf-8",
+        ) as file:
+            self.config = Config(**json.load(file))
+
+    def save(self):
+        self.path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        with open(
+            self.path,
+            "w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(
+                self.config.model_dump(),
+                file,
+                indent=4,
+                ensure_ascii=False,
+            )
+
+
+config_repository = ConfigRepository(Path("config/config.json"))

@@ -1,6 +1,6 @@
+from src.config import surgeon_repository, procedure_alias_repository, config_repository
 from src.generate_companion_declaration import generate_companion_declaration
 from src.medical_certificate_generator import generate_medical_certificate
-from src.config import surgeon_repository, procedure_alias_repository
 from src.receipt_generator import generate_discharge_prescription
 from pydantic import BaseModel, Field
 from pathlib import Path
@@ -36,7 +36,7 @@ class Surgery(BaseModel):
 
     @property
     def is_child(self) -> bool:
-        return self.idade < 18
+        return self.idade < config_repository.adult_age
 
     @property
     def faixa_etaria(self) -> str:
