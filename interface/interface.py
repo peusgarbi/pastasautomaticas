@@ -5,6 +5,7 @@ from src.extractor import (
 )
 from src.find_orientation_files import find_orientation_files
 from src.extract_text_from_pdf import extract_text_from_pdf
+from src.github_updates import has_update, update_program
 from interface.surgeons_window import SurgeonsWindow
 from interface.surgical_map import SurgicalMapWindow
 from src.docx_merger import merge_docx_files
@@ -33,6 +34,7 @@ class MainWindow(ctk.CTk):
 
         self._configure_window()
         self._create_widgets()
+        self.after(1000, self.check_updates)
 
     def _configure_window(self):
         self.title(f"Gerador Automático de Pastas v{VERSION}")
@@ -389,6 +391,22 @@ class MainWindow(ctk.CTk):
             self,
             self.surgeries,
         )
+
+    def check_updates(self):
+        release = has_update()
+
+        if release is None:
+            return
+
+        answer = messagebox.askyesno(
+            title="Atualização disponível",
+            message=(
+                f"Uma nova versão ({release.version}) está disponível.\n\n"
+                "Deseja atualizar agora?"
+            ),
+        )
+        if answer:
+            update_program(self, release)
 
     def generate_receipts(self):
 
